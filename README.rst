@@ -2,9 +2,9 @@
 EOX core |build-status|
 =======================
 
-.. |build-status| image:: https://circleci.com/gh/eduNEXT/eox-core.svg?style=svg
+.. |build-status| image:: https://circleci.com/gh/eduNEXT/eox-lms.svg?style=svg
 
-Eox-core (A.K.A. Edunext Open extensions) is an `openedx plugin`_, for the `edx-platform`_ that adds multiple API
+eox-lms (A.K.A. Edunext Open extensions) is an `openedx plugin`_, for the `edx-platform`_ that adds multiple API
 endpoints in order to extend the functionality of the `edx-platform`_ and avoid changing the base code directly. These
 API endpoints includes bulk creation of pre-activated users (for example, skip sending an activation email), enrollments
 and pre-enrollment operations.
@@ -29,13 +29,13 @@ Usage
 
 	# User creation API example
 	curl -X POST --header "Authorization: Bearer <YOUR_AUTH_TOKEN>" -H "Accept: application/json" \
-		http://localhost:18000/eox-core/api/v1/user/ --header "Content\-Type: application/json" \
+		http://localhost:18000/eox-lms/api/v1/user/ --header "Content\-Type: application/json" \
 		--data  '{"username": "jsmith", "email": "jhon@example.com", "password": "qwerty123",
 		"fullname": "Jhon Smith"}'
 
 	# Enroll api example
 	curl -X POST --header "Authorization: Bearer <YOUR_AUTH_TOKEN>" -H "Accept: application/json" \
-		http://localhost:18000/eox-core/api/v1/enrollment/ --header "Content-Type: application/json" \
+		http://localhost:18000/eox-lms/api/v1/enrollment/ --header "Content-Type: application/json" \
 		--data '{"course_id": "course-v1:edX+DemoX+Demo_Course", "email": "edx@example.com",
 		"mode": "audit", "force": 1}'
 
@@ -47,7 +47,7 @@ Instead of step #1, follow:
 1) Create a Django Oauth Toolkit Application at http://localhost:18000/admin/oauth2_provider/application/add/,
 copy the client-id and client-secret. Then follow 2 and 3.
 
-Also, to be able to use eox-core in newer Open edX versions like lilac, backend settings must be updated as follows:
+Also, to be able to use eox-lms in newer Open edX versions like lilac, backend settings must be updated as follows:
 
 .. code-block:: yaml
 
@@ -70,7 +70,7 @@ Installation on Open edX Devstack
 	cd ~/Documents/eoxstack/src/  # Assuming that devstack is in  ~/Documents/eoxstack/devstack/
 	sudo mkdir edxapp
 	cd edxapp
-	git clone git@github.com:eduNEXT/eox-core.git
+	git clone git@github.com:eduNEXT/eox-lms.git
 
 - Install plugin from your server (in this case the devstack docker lms shell):
 
@@ -78,7 +78,7 @@ Installation on Open edX Devstack
 
 	cd ~/Documents/eoxstack/devstack  # Change for your devstack path (if you are using devstack)
 	make lms-shell  # Enter the devstack machine (or server where lms process lives)
-	cd /edx/src/edxapp/eox-core
+	cd /edx/src/edxapp/eox-lms
 	pip install -e .
 
 Dependency Management
@@ -151,9 +151,9 @@ EOX core migration notes
 From version **2.0.0**, middlewares **RedirectionsMiddleware** and **PathRedirectionMiddleware** are now included in
 this plugin. These middlewares were moved from the **`eox-tenant`_** plugin.
 
-if you installed **eox-core** alongside **eox-tenant** plugin, follow the steps below:
+if you installed **eox-lms** alongside **eox-tenant** plugin, follow the steps below:
 
-- Upgrade eox-tenant to version **1.0.0** (previous releases are not compatible with eox-core 2.0.0)
+- Upgrade eox-tenant to version **1.0.0** (previous releases are not compatible with eox-lms 2.0.0)
 - Run the plugin migrations as indicated below:
 
 .. code-block:: bash
@@ -161,13 +161,13 @@ if you installed **eox-core** alongside **eox-tenant** plugin, follow the steps 
    $ python manage.py lms migrate eox_tenant --settings=<your app settings>
    $ python manage.py lms migrate eox_core --fake-initial --settings=<your app settings>
 
-In case eox-tenant is not installed on the platform, just run the eox-core migrations.
+In case eox-tenant is not installed on the platform, just run the eox-lms migrations.
 
 
 Auditing Django views
 =====================
 
-The majority of views in eox-core use an auditing decorator, defined in our custom library called `eox-audit-model`_,
+The majority of views in eox-lms use an auditing decorator, defined in our custom library called `eox-audit-model`_,
 that helps saving relevant information about non-idempotent operations. By default this functionality is turned on. To
 check your auditing records go to Django sysadmin and find DJANGO EDUNEXT AUDIT MODEL.
 
@@ -187,4 +187,4 @@ Contributions are welcome! See our `CONTRIBUTING`_ file for more
 information – it also contains guidelines for how to maintain high code
 quality, which will make your contribution more likely to be accepted.
 
-.. _CONTRIBUTING: https://github.com/eduNEXT/eox-core/blob/master/CONTRIBUTING.rst
+.. _CONTRIBUTING: https://github.com/eduNEXT/eox-lms/blob/master/CONTRIBUTING.rst

@@ -22,7 +22,7 @@ def get_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError('Unable to find version string.')
 
-version = get_version("eox_core", "__init__.py")
+version = get_version("eox_lms", "__init__.py")
 
 
 def load_requirements(*requirements_path):
@@ -50,12 +50,12 @@ def is_requirement(line):
 
 
 setup(
-    name="eox-core",
+    name="eox-lms",
     python_requires='>=3.5',
     version=version,
     author="eduNEXT",
     author_email="contact@edunext.co",
-    url="https://github.com/eduNEXT/eox-core",
+    url="https://github.com/eduNEXT/eox-lms",
     description="eduNEXT Openedx extensions",
     long_description=README,
     long_description_content_type='text/x-rst',
@@ -79,14 +79,14 @@ setup(
     license="AGPL",
     platforms=["any"],
     zip_safe=False,
-    packages=['eox_core'],
+    packages=['eox_lms'],
     include_package_data=True,
     entry_points={
         "lms.djangoapp": [
-            "eox_core = eox_core.apps:EoxCoreConfig",
+            "eox_lms = eox_lms.apps:EoxCoreConfig",
         ],
         "cms.djangoapp": [
-            "eox_core = eox_core.apps:EoxCoreCMSConfig",
+            "eox_lms = eox_lms.apps:EoxCoreCMSConfig",
         ],
     }
 )

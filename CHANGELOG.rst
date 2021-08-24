@@ -2,7 +2,7 @@ Change Log
 ==========
 
 ..
-   All enhancements and patches to eox-core will be documented
+   All enhancements and patches to eox-lms will be documented
    in this file.  It adheres to the structure of http://keepachangelog.com/ ,
    but in reStructuredText instead of Markdown (for ease of incorporation into
    Sphinx documentation and the PyPI description).
@@ -318,5 +318,5 @@ Removed
 Added
 ~~~~~
 
-* Course management automation. This new Studio module allows you to make changes to the course configuration for several courses at once. More information: https://github.com/eduNEXT/eox-core#course-management-automation
+* Course management automation. This new Studio module allows you to make changes to the course configuration for several courses at once. More information: https://github.com/eduNEXT/eox-lms#course-management-automation
 * Linting tests: Now, pylint and eslint tests are running on CircleCI tests.

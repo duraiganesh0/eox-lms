@@ -2,10 +2,10 @@ const path = require('path');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  entry: path.join(__dirname, '/eox_core/cms/static/js/index.jsx'),
+  entry: path.join(__dirname, '/eox_lms/cms/static/js/index.jsx'),
   output: {
     filename: 'build.js',
-    path: path.join(__dirname, '/eox_core/static/bundle/js'),
+    path: path.join(__dirname, '/eox_lms/static/bundle/js'),
     libraryTarget: 'window',
   },
   module: {

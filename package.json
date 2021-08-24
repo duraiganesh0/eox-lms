@@ -1,5 +1,5 @@
 {
-  "name": "eox-core",
+  "name": "eox-lms",
   "version": "0.13.0",
   "description": "eduNEXT Openedx Extensions",
   "private": true,
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eduNEXT/eox-core.git"
+    "url": "git+https://github.com/eduNEXT/eox-lms.git"
   },
   "author": "eduNEXT",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/eduNEXT/eox-core/issues"
+    "url": "https://github.com/eduNEXT/eox-lms/issues"
   },
-  "homepage": "https://github.com/eduNEXT/eox-core#readme",
+  "homepage": "https://github.com/eduNEXT/eox-lms#readme",
   "dependencies": {
     "@edx/edx-bootstrap": "0.4.3",
     "@edx/paragon": "2.6.4",
