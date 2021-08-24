@@ -1,0 +1,6 @@
+[cms.djangoapp]
+eox_core = eox_core.apps:EoxCoreCMSConfig
+
+[lms.djangoapp]
+eox_core = eox_core.apps:EoxCoreConfig
+
