@@ -180,8 +180,8 @@ def get_edxapp_user(**kwargs):
         for source_method in FetchUserSiteSources.get_enabled_source_methods():
             if source_method(user, domain):
                 break
-        else:
-            raise User.DoesNotExist
+        # else:
+        #     raise User.DoesNotExist
     except User.DoesNotExist:
         raise NotFound('No user found by {query} on site {site}.'.format(query=str(params), site=domain))
     return user

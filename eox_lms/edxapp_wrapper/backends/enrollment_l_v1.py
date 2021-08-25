@@ -43,6 +43,7 @@ def create_enrollment(user, *args, **kwargs):
         )
 
     """
+    print("create_enrollment")
     kwargs = dict(kwargs)
     program_uuid = kwargs.pop('bundle_id', None)
     course_id = kwargs.pop('course_id', None)
