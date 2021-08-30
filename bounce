@@ -1,0 +1,3 @@
+pip uninstall -y eox-lms
+pip install -e .
+
