@@ -31,9 +31,9 @@ from eox_lms.api.v1.serializers import (
 )
 from eox_lms.edxapp_wrapper.bearer_authentication import BearerAuthentication
 from eox_lms.edxapp_wrapper.coursekey import get_valid_course_key
-from eox_lms.edxapp_wrapper.courseware import get_courseware_courses
+# from eox_lms.edxapp_wrapper.courseware import get_courseware_courses
 from eox_lms.edxapp_wrapper.enrollments import create_enrollment, delete_enrollment, get_enrollment, update_enrollment
-from eox_lms.edxapp_wrapper.grades import get_course_grade_factory
+# from eox_lms.edxapp_wrapper.grades import get_course_grade_factory
 # from eox_lms.edxapp_wrapper.pre_enrollments import (
 #     create_pre_enrollment,
 #     delete_pre_enrollment,
