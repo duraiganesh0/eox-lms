@@ -9,20 +9,20 @@ except ImportError:
     from distutils.core import setup
 
 
-with open("README.rst", "r") as fh:
-    README = fh.read()
+# with open("README.rst", "r") as fh:
+#     README = fh.read()
 
-def get_version(*file_paths):
-    """Retrieves the version from the main app __init__.py"""
-    filename = os.path.join(os.path.dirname(__file__), *file_paths)
-    version_file = open(filename).read()
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError('Unable to find version string.')
-
-version = get_version("eox_lms", "__init__.py")
+# def get_version(*file_paths):
+#     """Retrieves the version from the main app __init__.py"""
+#     filename = os.path.join(os.path.dirname(__file__), *file_paths)
+#     version_file = open(filename).read()
+#     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+#                               version_file, re.M)
+#     if version_match:
+#         return version_match.group(1)
+#     raise RuntimeError('Unable to find version string.')
+#
+# version = get_version("eox_lms", "__init__.py")
 
 
 def load_requirements(*requirements_path):
@@ -52,12 +52,12 @@ def is_requirement(line):
 setup(
     name="eox-lms",
     python_requires='>=3.5',
-    version=version,
+    version="1",
     author="eduNEXT",
     author_email="contact@edunext.co",
     url="https://github.com/eduNEXT/eox-lms",
     description="eduNEXT Openedx extensions",
-    long_description=README,
+    long_description="",
     long_description_content_type='text/x-rst',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
