@@ -2,8 +2,8 @@
 
 from django.conf.urls import include, url
 
-from eox_lms import views
-from eox_lms.api_schema import docs_ui_view
+# from eox_lms import views
+# from eox_lms.api_schema import docs_ui_view
 
 app_name = 'eox_lms'  # pylint: disable=invalid-name
 
