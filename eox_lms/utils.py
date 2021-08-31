@@ -1,34 +1,34 @@
-#!/usr/bin/python
-"""
-Util function definitions.
-"""
+# #!/usr/bin/python
+# """
+# Util function definitions.
+# """
 import datetime
-import hashlib
-
+# import hashlib
+#
 from django.conf import settings
-from django.core import cache
+# from django.core import cache
 from pytz import UTC
-from rest_framework import serializers
-
+# from rest_framework import serializers
+#
 from eox_lms.edxapp_wrapper.users import get_user_profile
 
 UserProfile = get_user_profile()
 
-try:
-    cache = cache.caches['general']  # pylint: disable=invalid-name
-except Exception:  # pylint: disable=broad-except
-    cache = cache.cache  # pylint: disable=invalid-name
-
-
-def fasthash(string):
-    """
-    Hashes `string` into a string representation of a 128-bit digest.
-    """
-    md4 = hashlib.new("md4")
-    md4.update(string.encode('utf-8'))
-    return md4.hexdigest()
-
-
+# try:
+#     cache = cache.caches['general']  # pylint: disable=invalid-name
+# except Exception:  # pylint: disable=broad-except
+#     cache = cache.cache  # pylint: disable=invalid-name
+#
+#
+# def fasthash(string):
+#     """
+#     Hashes `string` into a string representation of a 128-bit digest.
+#     """
+#     md4 = hashlib.new("md4")
+#     md4.update(string.encode('utf-8'))
+#     return md4.hexdigest()
+#
+#
 def get_valid_years():
     """
     Return valid list of year range, for the YEAR_OF_BIRTH_CHOICES
