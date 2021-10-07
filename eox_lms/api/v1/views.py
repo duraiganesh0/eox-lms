@@ -40,7 +40,7 @@ from eox_lms.edxapp_wrapper.enrollments import create_enrollment, delete_enrollm
 #     get_pre_enrollment,
 #     update_pre_enrollment,
 # )
-from eox_lms.edxapp_wrapper.users import create_edxapp_user, get_edxapp_user, get_user_read_only_serializer
+from eox_lms.edxapp_wrapper.users import create_edxapp_user, get_edxapp_user, get_edxapp_users, get_user_read_only_serializer
 
 try:
     from eox_audit_model.decorators import audit_drf_api
@@ -97,8 +97,8 @@ class UserQueryMixin:
         username = query_params.get("username", None)
         email = query_params.get("email", None)
 
-        if not email and not username:
-            raise ValidationError(detail="Email or username needed")
+        # if not email and not username:
+        #    raise ValidationError(detail="Email or username needed")
 
         user_query = {}
         if hasattr(self, "site") and self.site:
@@ -326,22 +326,34 @@ class EdxappUser(UserQueryMixin, APIView):
         - 404: User not found
         """
         query = self.get_user_query(request)
+
+        data = self.get_single_user(query, request) if self.single_request(query) else self.get_all_users(request)
+
+        return Response(data)
+
+    def single_request(self, query):
+        return "username" in query or "email" in query
+
+    def get_single_user(self, query, request):
         user = get_edxapp_user(**query)
+        data = self.serialize(user, request)
+        return data
+
+    def get_all_users(self, request):
+        users = get_edxapp_users()
+        data = []
+        for next in users:
+            data.append(self.serialize(next, request))
+        return data
+
+    def serialize(self, user, request):
         admin_fields = getattr(settings, "ACCOUNT_VISIBILITY_CONFIGURATION", {}).get(
             "admin_fields", {}
         )
         serialized_user = EdxappUserReadOnlySerializer(
             user, custom_fields=admin_fields, context={"request": request}
         )
-        response_data = serialized_user.data
-        # Show a warning if the request is providing email and username
-        # to let the client know we're giving priority to the username
-        if "username" and "email" in self.query_params:
-            response_data[
-                "warning"
-            ] = "The username prevails over the email when both are provided to get the user."
-
-        return Response(response_data)
+        return serialized_user.data
 
 
 class EdxappUserUpdater(UserQueryMixin, APIView):

@@ -148,6 +148,11 @@ def create_edxapp_user(*args, **kwargs):
     return user, errors
 
 
+def get_edxapp_users():
+    users = User.objects.all()
+    return users
+
+
 def get_edxapp_user(**kwargs):
     """
     Retrieve a user by username and/or email
