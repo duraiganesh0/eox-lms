@@ -32,7 +32,7 @@ from eox_lms.api.v1.serializers import (
 from eox_lms.edxapp_wrapper.bearer_authentication import BearerAuthentication
 # from eox_lms.edxapp_wrapper.coursekey import get_valid_course_key
 # from eox_lms.edxapp_wrapper.courseware import get_courseware_courses
-from eox_lms.edxapp_wrapper.enrollments import create_enrollment, delete_enrollment, get_enrollment, update_enrollment
+from eox_lms.edxapp_wrapper.enrollments import create_enrollment, delete_enrollment, get_enrollment, get_user_enrollments_for_course, update_enrollment
 # from eox_lms.edxapp_wrapper.grades import get_course_grade_factory
 # from eox_lms.edxapp_wrapper.pre_enrollments import (
 #     create_pre_enrollment,
@@ -779,24 +779,41 @@ class EdxappEnrollment(UserQueryMixin, APIView):
         - 400: Bad request, missing course_id or either email or username
         - 404: User or course not found
         """
-        user_query = self.get_user_query(request)
-        user = get_edxapp_user(**user_query)
+        user_query = None
+        user = None
+        flag_get_all = True
+
+        if self.query_params.get("username", None) is not None:
+            user_query = self.get_user_query(request)
+            user = get_edxapp_user(**user_query)
+            flag_get_all = False
 
         course_id = self.query_params.get("course_id", None)
 
         if not course_id:
             raise ValidationError(detail="You have to provide a course_id")
 
-        enrollment_query = {
-            "username": user.username,
-            "course_id": course_id,
-        }
-        enrollment, errors = get_enrollment(**enrollment_query)
+        if flag_get_all == False:
+            enrollment_query = {
+                "username": user.username,
+                "course_id": course_id,
+            }
+            enrollment, errors = get_enrollment(**enrollment_query)
 
-        if errors:
-            raise NotFound(detail=errors)
-        response = EdxappCourseEnrollmentSerializer(enrollment).data
-        return Response(response)
+            if errors:
+                raise NotFound(detail=errors)
+            response = EdxappCourseEnrollmentSerializer(enrollment).data
+            return Response(response)
+        else:
+            enrollment_query = {
+                "course_id": course_id,
+            }
+            enrollment, errors = get_user_enrollments_for_course(**enrollment_query)
+            if errors:
+                raise NotFound(detail=errors)
+            response = EdxappCourseEnrollmentSerializer(enrollment).data
+            return Response(response)
+
 
     @apidocs.schema(
         parameters=[

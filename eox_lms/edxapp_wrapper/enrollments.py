@@ -36,6 +36,14 @@ def get_enrollment(*args, **kwargs):
     return backend.get_enrollment(*args, **kwargs)
 
 
+def get_user_enrollments_for_course(*args, **kwargs):
+    """ Get all user enrollments for a Course on edxapp """
+
+    backend_function = settings.EOX_CORE_ENROLLMENT_BACKEND
+    backend = import_module(backend_function)
+
+    return backend.get_user_enrollments_for_course()
+
 def delete_enrollment(*args, **kwargs):
     """ Delete enrollments on edxapp """
 

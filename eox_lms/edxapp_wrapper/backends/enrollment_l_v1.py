@@ -128,6 +128,38 @@ def get_enrollment(*args, **kwargs):
     return enrollment, errors
 
 
+def get_user_enrollments_for_course(*args, **kwargs):
+    """
+    Return enrollment of given user in the course provided.
+
+    Example:
+        >>>get_course_enrollments(
+            {
+            "course_id": "course-v1-edX-DemoX-1T2015"
+            }
+        )
+    """
+    errors = []
+    course_id = kwargs.pop('course_id', None)
+
+    try:
+        LOG.info('Getting all the enrollments of course: %s', course_id)
+        enrollments = api._data_api().get_user_enrollments(CourseKey.from_string(course_id))
+        if not enrollments:
+            errors.append('No enrollment found for course:`{}`'.format(course_id))
+            return None, errors
+    except InvalidKeyError:
+        errors.append('No course found for course_id `{}`'.format(course_id))
+        return None, errors
+    # enrollment['enrollment_attributes'] = api.get_enrollment_attributes(username, course_id)
+    # enrollment['course_id'] = course_id
+    return enrollments, errors
+
+
+
+
+
+
 def delete_enrollment(*args, **kwargs):
     """
     Delete enrollment and enrollment attributes of given user in the course provided.
