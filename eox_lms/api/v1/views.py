@@ -783,6 +783,7 @@ class EdxappEnrollment(UserQueryMixin, APIView):
         user = None
         flag_get_all = True
 
+        self.query_params = self.get_query_params(request)
         if self.query_params.get("username", None) is not None:
             user_query = self.get_user_query(request)
             user = get_edxapp_user(**user_query)
@@ -811,7 +812,7 @@ class EdxappEnrollment(UserQueryMixin, APIView):
             enrollment, errors = get_user_enrollments_for_course(**enrollment_query)
             if errors:
                 raise NotFound(detail=errors)
-            response = EdxappCourseEnrollmentSerializer(enrollment).data
+            response = EdxappCourseEnrollmentSerializer(enrollment , many=True).data
             return Response(response)
 
 
