@@ -25,6 +25,9 @@ from rest_framework.exceptions import APIException, NotFound
 from eox_lms.edxapp_wrapper.backends.edxfuture_i_v1 import get_program
 from eox_lms.edxapp_wrapper.coursekey import get_valid_course_key, validate_org
 from eox_lms.edxapp_wrapper.users import check_edxapp_account_conflicts
+from eox_lms.api.v1.serializers import (
+    EdxappCourseEnrollmentQuerySerializer,
+    EdxappCourseEnrollmentSerializer)
 
 LOG = logging.getLogger(__name__)
 
@@ -149,17 +152,31 @@ def get_user_enrollments_for_course(*args, **kwargs):
             errors.append('No enrollment found for course:`{}`'.format(course_id))
             return None, errors
 
-        for enrollment in enrollments.iterator():
+#        enrollments = []
+#        for enrollment in enrollments.iterator():
+#            enrollment_model_serialized = EdxappCourseEnrollmentSerializer(enrollment).data
+#            enrollment_model_serialized['enrollment_attributes'] = api.get_enrollment_attributes(enrollment.username, course_id.replace(' ', '+'))
+#            enrollment_model_serialized['course_id'] = course_id
+#            enrollments_serialized.append(enrollment_model_serialized)
             print(enrollment)
+            print("user is {}".format(enrollment.username))
+            print("enrollment_model_serialized is {}".format(enrollment_model_serialized))
+        
+        return enrollments, errors
     except InvalidKeyError:
         errors.append('No course found for course_id `{}`'.format(course_id))
         return None, errors
-    # enrollment['enrollment_attributes'] = api.get_enrollment_attributes(username, course_id)
-    # enrollment['course_id'] = course_id
     return enrollments, errors
 
 
+def get_enrollment_attributes(username, course_id):
+    """
+    Return enrollment of given user in the course provided.
 
+    Example:
+        >>>get_enrollment_attributes('user1' , 'course_id1')
+    """
+    return api.get_enrollment_attributes(username, course_id.replace(' ', '+'))
 
 
 

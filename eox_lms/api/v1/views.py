@@ -32,7 +32,7 @@ from eox_lms.api.v1.serializers import (
 from eox_lms.edxapp_wrapper.bearer_authentication import BearerAuthentication
 # from eox_lms.edxapp_wrapper.coursekey import get_valid_course_key
 # from eox_lms.edxapp_wrapper.courseware import get_courseware_courses
-from eox_lms.edxapp_wrapper.enrollments import create_enrollment, delete_enrollment, get_enrollment, update_enrollment
+from eox_lms.edxapp_wrapper.enrollments import create_enrollment, delete_enrollment, get_enrollment, update_enrollment, get_user_enrollments_for_course, get_user_enrollment_attributes
 # from eox_lms.edxapp_wrapper.grades import get_course_grade_factory
 # from eox_lms.edxapp_wrapper.pre_enrollments import (
 #     create_pre_enrollment,
@@ -818,10 +818,21 @@ class EdxappEnrollment(UserQueryMixin, APIView):
             enrollment_query = {
                 "course_id": course_id,
             }
-            enrollment, errors = get_user_enrollments_for_course(**enrollment_query)
+            enrollment_set, errors = get_user_enrollments_for_course(**enrollment_query)
             if errors:
                 raise NotFound(detail=errors)
-            response = EdxappCourseEnrollmentSerializer(enrollment , many=True).data
+            
+        
+            enrollments_serialized = []
+
+            for enrollment in enrollment_set.iterator():
+                enrollment_model_serialized = EdxappCourseEnrollmentSerializer(enrollment).data
+                enrollment_model_serialized['enrollment_attributes'] = get_user_enrollment_attributes(enrollment.username, course_id.replace(' ', '+'))
+                enrollment_model_serialized['course_id'] = course_id.replace(' ','+')
+                enrollments_serialized.append(enrollment_model_serialized)
+
+
+            response = EdxappCourseEnrollmentSerializer(enrollments_serialized , many=True).data
             return Response(response)
 
 
