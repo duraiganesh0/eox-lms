@@ -25,6 +25,7 @@ def plugin_settings(settings):
     """
     settings.EOX_CORE_COMMENTS_SERVICE_USERS_BACKEND = "eox_lms.edxapp_wrapper.backends.comments_service_users_j_v1"
     settings.EOX_CORE_USERS_BACKEND = "eox_lms.edxapp_wrapper.backends.users_l_v1"
+    settings.EOX_CORE_GROUPS_BACKEND = "eox_lms.edxapp_wrapper.backends.groups_l_v1"
     settings.EOX_CORE_ENROLLMENT_BACKEND = "eox_lms.edxapp_wrapper.backends.enrollment_l_v1"
     settings.EOX_CORE_PRE_ENROLLMENT_BACKEND = "eox_lms.edxapp_wrapper.backends.pre_enrollment_l_v1"
     settings.EOX_CORE_CERTIFICATES_BACKEND = "eox_lms.edxapp_wrapper.backends.certificates_h_v1"

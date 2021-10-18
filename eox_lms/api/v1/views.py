@@ -41,6 +41,8 @@ from eox_lms.edxapp_wrapper.enrollments import create_enrollment, delete_enrollm
 #     update_pre_enrollment,
 # )
 from eox_lms.edxapp_wrapper.users import create_edxapp_user, get_edxapp_user, get_edxapp_users, get_user_read_only_serializer
+from eox_lms.edxapp_wrapper.groups import get_group, get_groups, get_all_groups
+
 
 try:
     from eox_audit_model.decorators import audit_drf_api
@@ -109,6 +111,67 @@ class UserQueryMixin:
             user_query["email"] = email
 
         return user_query
+
+
+    def serialize(self, user, request):
+        """ Serialize the user data addming the groups """
+        admin_fields = getattr(settings, "ACCOUNT_VISIBILITY_CONFIGURATION", {}).get(
+            "admin_fields", {}
+        )
+        serialized_user = EdxappUserReadOnlySerializer(
+            user, custom_fields=admin_fields, context={"request": request}
+        )
+        return self.write_groups(user, serialized_user.data)
+
+
+    def write_groups(self, user, json):
+        """ Add the group data into the user response """
+        user_json = {}
+        for next in json:
+            user_json[next] = json[next]
+
+        user_json[self.groups_attr()] = []
+        for next in get_groups(user):
+            user_json[self.groups_attr()].append(next.name)
+
+        return user_json
+
+
+    def manage_groups(self, user, add, remove):
+        """ Manage the groups for the user """
+        for next in add:
+            group = get_group(next)
+            user.groups.add(group)
+
+        for next in remove:
+            group = get_group(next)
+            user.groups.remove(group)
+
+    def groups(self, json):
+        """ Get the groups from the json """
+        return json[self.groups_attr()] if json[self.groups_attr()] else []
+
+    def groups_add(self, json):
+        """ Get the groups to be added """
+        return self.groups_(json, self.groups_add_attr())
+
+    def groups_remove(self, json):
+        """ Get the groups to be removed """
+        return self.groups_(json, self.groups_remove_attr())
+
+    def groups_(self, json, type):
+        """ Get the groups for the specified type """
+        groups = self.groups(json)
+        return groups[type] if groups[type] else {}
+
+    def groups_attr(self):
+        return "groups"
+
+    def groups_add_attr(self):
+        return "add"
+
+    def groups_remove_attr(self):
+        return "remove"
 
 
 class EdxappUser(UserQueryMixin, APIView):
@@ -246,8 +309,11 @@ class EdxappUser(UserQueryMixin, APIView):
         data["site"] = get_current_site(request)
         user, msg = create_edxapp_user(**data)
 
+        self.groups(request.data) and self.manage_groups(user, self.groups(request.data), [])
+
         serialized_user = EdxappUserSerializer(user)
         response_data = serialized_user.data
+        response_data = self.write_groups(user, response_data)
         if msg:
             response_data["messages"] = msg
         return Response(response_data)
@@ -325,6 +391,7 @@ class EdxappUser(UserQueryMixin, APIView):
         - 401: Unauthorized user to make the request.
         - 404: User not found
         """
+
         query = self.get_user_query(request)
 
         data = self.get_single_user(query, request) if self.single_request(query) else self.get_all_users(request)
@@ -332,37 +399,22 @@ class EdxappUser(UserQueryMixin, APIView):
         return Response(data)
 
     def single_request(self, query):
+        """ Return true if the query is a single user request """
         return "username" in query or "email" in query
 
     def get_single_user(self, query, request):
+        """ Get a single user """
         user = get_edxapp_user(**query)
         data = self.serialize(user, request)
         return data
 
     def get_all_users(self, request):
+        """ Get all the users for edx """
         users = get_edxapp_users()
         data = []
         for next in users:
             data.append(self.serialize(next, request))
         return data
-
-    def serialize(self, user, request):
-        admin_fields = getattr(settings, "ACCOUNT_VISIBILITY_CONFIGURATION", {}).get(
-            "admin_fields", {}
-        )
-        serialized_user = EdxappUserReadOnlySerializer(
-            user, custom_fields=admin_fields, context={"request": request}
-        )
-
-        user_json = {}
-        for next in serialized_user.data:
-            user_json[next] = serialized_user.data[next]
-
-        user_json["groups"] = []
-        for next in user.groups.all():
-            user_json["groups"].append(next.name)
-
-        return user_json
 
 
 class EdxappUserUpdater(UserQueryMixin, APIView):
@@ -538,13 +590,10 @@ class EdxappUserUpdater(UserQueryMixin, APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        admin_fields = getattr(settings, "ACCOUNT_VISIBILITY_CONFIGURATION", {}).get(
-            "admin_fields", {}
-        )
-        serialized_user = EdxappUserReadOnlySerializer(
-            user, custom_fields=admin_fields, context={"request": request}
-        )
-        return Response(serialized_user.data)
+        self.manage_groups(user, self.groups_add(data), self.groups_remove(data))
+
+        data = self.serialize(user, request)
+        return Response(data)
 
 
 class EdxappEnrollment(UserQueryMixin, APIView):
