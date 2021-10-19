@@ -793,6 +793,7 @@ class EdxappEnrollment(UserQueryMixin, APIView):
             data, self.single_enrollment_update
         )
 
+
     @apidocs.schema(
         parameters=[
             apidocs.query_parameter(
@@ -825,7 +826,7 @@ class EdxappEnrollment(UserQueryMixin, APIView):
 
     def get_users_enrolled_in_course(self, course_id):
         enrollment_query = {
-            "course_id": course_id,
+            "course_id": course_id.replace(' ' , '+'),
         }
         enrollment_set, errors = get_user_enrollments_for_course(**enrollment_query)
         if errors:
@@ -838,7 +839,7 @@ class EdxappEnrollment(UserQueryMixin, APIView):
                                                                                                   course_id.replace(' ',
                                                                                                                     '+'))
             enrollment_model_serialized['course_id'] = course_id.replace(' ', '+')
-            enrollment_model_serialized['user'] = enrollment['username']
+            enrollment_model_serialized['user'] = enrollment.username
             enrollments_serialized.append(enrollment_model_serialized)
 
         response = EdxappCourseEnrollmentSerializer(enrollments_serialized, many=True).data
@@ -894,7 +895,7 @@ class EdxappEnrollment(UserQueryMixin, APIView):
         if not course_id:
             raise ValidationError(detail="You have to provide a course_id")
 
-        if self.is_get_single_user_enrollment():
+        if self.is_get_single_user_enrollment(request):
             response = self.get_single_user_enrollment(course_id , request)
         else:
             response = self.get_users_enrolled_in_course(course_id)

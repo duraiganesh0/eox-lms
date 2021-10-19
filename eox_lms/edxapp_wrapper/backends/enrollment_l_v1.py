@@ -147,7 +147,7 @@ def get_user_enrollments_for_course(*args, **kwargs):
 
     try:
         LOG.info('Getting all the enrollments of course: %s', course_id)
-        enrollments = api._data_api().get_user_enrollments(CourseKey.from_string(course_id.replace(' ', '+')))
+        enrollments = api._data_api().get_user_enrollments(CourseKey.from_string(course_id))
         if not enrollments:
             errors.append('No enrollment found for course:`{}`'.format(course_id))
             return None, errors
@@ -176,7 +176,7 @@ def get_enrollment_attributes(username, course_id):
     Example:
         >>>get_enrollment_attributes('user1' , 'course_id1')
     """
-    return api.get_enrollment_attributes(username, course_id.replace(' ', '+'))
+    return api.get_enrollment_attributes(username, course_id)
 
 
 
