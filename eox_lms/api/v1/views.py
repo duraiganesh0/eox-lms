@@ -817,6 +817,49 @@ class EdxappEnrollment(UserQueryMixin, APIView):
             404: "User or course not found",
         },
     )
+
+    def is_get_single_user_enrollment(self, request):
+        self.query_params = self.get_query_params(request)
+        return False  if self.query_params.get("username", None) is None else True
+
+
+    def get_users_enrolled_in_course(self, course_id):
+        enrollment_query = {
+            "course_id": course_id,
+        }
+        enrollment_set, errors = get_user_enrollments_for_course(**enrollment_query)
+        if errors:
+            raise NotFound(detail=errors)
+
+        enrollments_serialized = []
+        for enrollment in enrollment_set.iterator():
+            enrollment_model_serialized = EdxappCourseEnrollmentSerializer(enrollment).data
+            enrollment_model_serialized['enrollment_attributes'] = get_user_enrollment_attributes(enrollment.username,
+                                                                                                  course_id.replace(' ',
+                                                                                                                    '+'))
+            enrollment_model_serialized['course_id'] = course_id.replace(' ', '+')
+            enrollment_model_serialized['user'] = enrollment['username']
+            enrollments_serialized.append(enrollment_model_serialized)
+
+        response = EdxappCourseEnrollmentSerializer(enrollments_serialized, many=True).data
+        return response
+
+
+    def get_single_user_enrollment(self , course_id , request):
+        user_query = self.get_user_query(request)
+        user = get_edxapp_user(**user_query)
+        enrollment_query = {
+            "username": user.username,
+            "course_id": course_id
+        }
+        enrollment, errors = get_enrollment(**enrollment_query)
+
+        if errors:
+            raise NotFound(detail=errors)
+        response = EdxappCourseEnrollmentSerializer(enrollment).data
+        return response
+
+
     def get(self, request, *args, **kwargs):
         """
         Retrieves enrollment information given a user and a course_id
@@ -842,47 +885,21 @@ class EdxappEnrollment(UserQueryMixin, APIView):
         flag_get_all = True
 
         self.query_params = self.get_query_params(request)
-        if self.query_params.get("username", None) is not None:
-            user_query = self.get_user_query(request)
-            user = get_edxapp_user(**user_query)
-            flag_get_all = False
-
         course_id = self.query_params.get("course_id", None)
+        # if self.is_get_single_user_enrollment(request):
+        #     self.get_single_user_enrollment(request)
+        #     user_query = self.get_user_query(request)
+        #     user = get_edxapp_user(**user_query)
 
         if not course_id:
             raise ValidationError(detail="You have to provide a course_id")
 
-        if flag_get_all == False:
-            enrollment_query = {
-                "username": user.username,
-                "course_id": course_id,
-            }
-            enrollment, errors = get_enrollment(**enrollment_query)
-
-            if errors:
-                raise NotFound(detail=errors)
-            response = EdxappCourseEnrollmentSerializer(enrollment).data
-            return Response(response)
+        if self.is_get_single_user_enrollment():
+            response = self.get_single_user_enrollment(course_id , request)
         else:
-            enrollment_query = {
-                "course_id": course_id,
-            }
-            enrollment_set, errors = get_user_enrollments_for_course(**enrollment_query)
-            if errors:
-                raise NotFound(detail=errors)
-            
-        
-            enrollments_serialized = []
+            response = self.get_users_enrolled_in_course(course_id)
 
-            for enrollment in enrollment_set.iterator():
-                enrollment_model_serialized = EdxappCourseEnrollmentSerializer(enrollment).data
-                enrollment_model_serialized['enrollment_attributes'] = get_user_enrollment_attributes(enrollment.username, course_id.replace(' ', '+'))
-                enrollment_model_serialized['course_id'] = course_id.replace(' ','+')
-                enrollments_serialized.append(enrollment_model_serialized)
-
-
-            response = EdxappCourseEnrollmentSerializer(enrollments_serialized , many=True).data
-            return Response(response)
+        return Response(response)
 
 
     @apidocs.schema(
