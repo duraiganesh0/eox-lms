@@ -32,7 +32,7 @@ class EoxCoreConfig(AppConfig):
 
 class EoxCoreCMSConfig(EoxCoreConfig):
     """App configuration"""
-    name = 'eox_lms'
+    name = 'eox_studio'
     verbose_name = "eduNEXT Openedx Extensions"
 
     plugin_app = {
