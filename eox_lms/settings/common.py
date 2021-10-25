@@ -39,7 +39,8 @@ def plugin_settings(settings):
     settings.DATA_API_DEF_PAGE_SIZE = 1000
     settings.DATA_API_MAX_PAGE_SIZE = 5000
     settings.EDXMAKO_MODULE = "eox_lms.edxapp_wrapper.backends.edxmako_module"
-    settings.EOX_CORE_COURSES_BACKEND = "eox_lms.edxapp_wrapper.backends.courses_h_v1"
+    # settings.EOX_CORE_COURSES_BACKEND = "eox_lms.edxapp_wrapper.backends.courses_h_v1"
+    settings.EOX_CORE_COURSES_BACKEND = "eox_lms.edxapp_wrapper.backends.courses_l_v1"
     settings.EOX_CORE_COURSEKEY_BACKEND = "eox_lms.edxapp_wrapper.backends.coursekey_h_v1"
     settings.EOX_CORE_SITE_CONFIGURATION = "eox_lms.edxapp_wrapper.backends.site_configuration_h_v1"
     settings.EOX_CORE_COURSE_MANAGEMENT_REQUEST_TIMEOUT = 1000
@@ -51,6 +52,9 @@ def plugin_settings(settings):
     settings.EOX_CORE_BEARER_AUTHENTICATION = 'eox_lms.edxapp_wrapper.backends.bearer_authentication_j_v1'
     settings.EOX_CORE_ASYNC_TASKS = []
     settings.EOX_CORE_THIRD_PARTY_AUTH_BACKEND = 'eox_lms.edxapp_wrapper.backends.third_party_auth_j_v1'
+
+
+
 
     if settings.EOX_CORE_USER_ENABLE_MULTI_TENANCY:
         settings.EOX_CORE_USER_ORIGIN_SITE_SOURCES = [
