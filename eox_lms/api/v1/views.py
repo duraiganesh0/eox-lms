@@ -42,7 +42,7 @@ from eox_lms.edxapp_wrapper.enrollments import create_enrollment, delete_enrollm
 # )
 from eox_lms.edxapp_wrapper.users import create_edxapp_user, get_edxapp_user, get_edxapp_users, get_user_read_only_serializer
 from eox_lms.edxapp_wrapper.groups import get_group, get_groups, get_all_groups
-from eox_lms.edxapp_wrapper.courses import create_course
+# from eox_lms.edxapp_wrapper.courses import create_course
 
 try:
     from eox_audit_model.decorators import audit_drf_api
@@ -54,13 +54,13 @@ except ImportError:
 LOG = logging.getLogger(__name__)
 
 
-class EdxappCourse(APIView):
-
-    authentication_classes = (BearerAuthentication, SessionAuthentication)
-
-    def post(self, request, *args, **kwargs):
-        print("EdxappCourse.post called")
-        return create_course(request)
+# class EdxappCourse(APIView):
+#
+#     authentication_classes = (BearerAuthentication, SessionAuthentication)
+#
+#     def post(self, request, *args, **kwargs):
+#         print("EdxappCourse.post called")
+#         return create_course(request)
 
 
 class UserQueryMixin:
