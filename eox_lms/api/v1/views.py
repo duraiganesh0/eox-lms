@@ -158,7 +158,7 @@ class UserQueryMixin:
 
     def groups(self, json):
         """ Get the groups from the json """
-        return json[self.groups_attr()] if json[self.groups_attr()] else []
+        return json[self.groups_attr()] if self.groups_attr() in json else []
 
     def groups_add(self, json):
         """ Get the groups to be added """
@@ -171,7 +171,7 @@ class UserQueryMixin:
     def groups_(self, json, type):
         """ Get the groups for the specified type """
         groups = self.groups(json)
-        return groups[type] if groups[type] else {}
+        return groups[type] if groups != [] and type in groups else {}
 
     def groups_attr(self):
         return "groups"
