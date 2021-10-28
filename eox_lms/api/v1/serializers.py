@@ -18,6 +18,7 @@ from eox_lms.edxapp_wrapper.users import (
     get_user_read_only_serializer,
     get_user_signup_source,
     get_username_max_length,
+    get_edxapp_user_by_id
 )
 from eox_lms.utils import (
     create_user_profile,
@@ -61,6 +62,28 @@ class EdxappWithWarningSerializer(serializers.Serializer):
         if self.context:
             return self.context
         return None
+
+
+class EdxappUserSocialAuthSerializerBase(serializers.Serializer):
+    """
+    Serialization for a User Social Auth object base
+    """
+    provider = serializers.CharField(max_length=255)
+    uid = serializers.CharField(max_length=255)
+
+
+class EdxappUserSocialAuthSerializer(EdxappUserSocialAuthSerializerBase):
+    """
+    Serialization for a User Social Auth object
+    """
+    user_id = serializers.IntegerField()
+
+
+class EdxappUserSocialAuthQuerySerializer(EdxappUserSocialAuthSerializerBase):
+    """
+    Serialization for a User Social Auth object post
+    """
+    username = serializers.CharField(max_length=255)
 
 
 class EdxappUserSerializer(serializers.Serializer):

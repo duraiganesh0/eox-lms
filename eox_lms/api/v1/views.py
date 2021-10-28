@@ -28,6 +28,8 @@ from eox_lms.api.v1.serializers import (
     EdxappUserReadOnlySerializer,
     EdxappUserSerializer,
     WrittableEdxappUserSerializer,
+    EdxappUserSocialAuthSerializer,
+    EdxappUserSocialAuthQuerySerializer
 )
 from eox_lms.edxapp_wrapper.bearer_authentication import BearerAuthentication
 # from eox_lms.edxapp_wrapper.coursekey import get_valid_course_key
@@ -42,7 +44,8 @@ from eox_lms.edxapp_wrapper.enrollments import create_enrollment, delete_enrollm
 # )
 from eox_lms.edxapp_wrapper.users import create_edxapp_user, get_edxapp_user, get_edxapp_users, get_user_read_only_serializer
 from eox_lms.edxapp_wrapper.groups import get_group, get_groups, get_all_groups
-# from eox_lms.edxapp_wrapper.courses import create_course
+from eox_lms.edxapp_wrapper.user_social_auth import get_user_social_auths, add_user_social_auth
+# from eox_lms.edxapp_wrapper.courses import create_coursee
 
 try:
     from eox_audit_model.decorators import audit_drf_api
@@ -54,13 +57,54 @@ except ImportError:
 LOG = logging.getLogger(__name__)
 
 
-# class EdxappCourse(APIView):
-#
-#     authentication_classes = (BearerAuthentication, SessionAuthentication)
-#
-#     def post(self, request, *args, **kwargs):
-#         print("EdxappCourse.post called")
-#         return create_course(request)
+class EdxappUserSocialAuthentication(APIView):
+
+    authentication_classes = (BearerAuthentication, SessionAuthentication)
+    permission_classes = (EoxCoreAPIPermission,)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Get the user Social Auths
+        """
+        return Response(self.get_auth_data(get_user_social_auths()))
+
+    def post(self, request, *args, **kwargs):
+        """
+        Create a user social auth
+        """
+        serializer = EdxappUserSocialAuthQuerySerializer(data=request.data)
+        serializer.is_valid()
+        data = serializer.data.copy()
+        data['user'] = self.user(username=data['username'])
+        data.pop('username')
+        add_user_social_auth(**data)
+        translated = self.translate(serializer.data)
+        return Response(self.get_auth_data(get_user_social_auths(**translated)))
+
+    def get_auth_data(self, auths):
+        """
+        Get the data from an auth query array
+        """
+        data = [self.translate(EdxappUserSocialAuthSerializer(next).data) for next in auths]
+        return data
+
+    def translate(self, auth):
+        """
+        Convert the user_id to username and vice versa
+        """
+        id = auth.pop('user_id') if 'user_id' in auth else None
+        username = auth.pop('username') if 'username' in auth else None
+        user = self.user(id=id) if id else self.user(username=username)
+        if id:
+            auth['username'] = user.username
+        if username:
+            auth['user_id'] = str(user.id)
+        return auth
+
+    def user(self, *args, **kwargs):
+        """ Get the user """
+        return get_edxapp_user(**kwargs)
 
 
 class UserQueryMixin:
@@ -184,6 +228,7 @@ class UserQueryMixin:
 
 
 class EdxappUser(UserQueryMixin, APIView):
+
     """
     Handles the creation of a User on edxapp
 

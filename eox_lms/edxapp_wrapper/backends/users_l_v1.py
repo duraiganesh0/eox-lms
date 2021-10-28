@@ -152,7 +152,6 @@ def get_edxapp_users():
     users = User.objects.all()
     return users
 
-
 def get_edxapp_user(**kwargs):
     """
     Retrieve a user by username and/or email
@@ -173,7 +172,7 @@ def get_edxapp_user(**kwargs):
             }
         )
     """
-    params = {key: kwargs.get(key) for key in ['username', 'email'] if key in kwargs}
+    params = {key: kwargs.get(key) for key in ['username', 'email', 'id'] if key in kwargs}
     site = kwargs.get('site')
     try:
         domain = site.domain
@@ -190,6 +189,10 @@ def get_edxapp_user(**kwargs):
     except User.DoesNotExist:
         raise NotFound('No user found by {query} on site {site}.'.format(query=str(params), site=domain))
     return user
+
+
+# def get_edxapp_user_by_id(*args, **kwargs):
+#     return User.objects.get(**kwargs)
 
 
 def delete_edxapp_user(*args, **kwargs):

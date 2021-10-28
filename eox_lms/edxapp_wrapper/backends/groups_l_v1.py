@@ -9,7 +9,6 @@ from django.contrib.auth.models import Group
 
 LOG = logging.getLogger(__name__)
 
-
 def get_group(name):
     """
     Return the group for the specified name
