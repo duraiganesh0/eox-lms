@@ -21,7 +21,7 @@ class EoxCoreConfig(AppConfig):
         },
         'settings_config': {
             'lms.djangoapp': {
-                'test': {'relative_path': 'settings.test'},
+                # 'test': {'relative_path': 'settings.test'},
                 'common': {'relative_path': 'settings.common'},
                 'production': {'relative_path': 'settings.production'},
                 'devstack': {'relative_path': 'settings.devstack'},
@@ -30,24 +30,24 @@ class EoxCoreConfig(AppConfig):
     }
 
 
-class EoxCoreCMSConfig(EoxCoreConfig):
-    """App configuration"""
-    name = 'eox_studio'
-    verbose_name = "eduNEXT Openedx Extensions"
-
-    plugin_app = {
-        'url_config': {
-            'cms.djangoapp': {
-                'namespace': 'eox-lms',
-                'regex': r'^eox-lms/',
-                'relative_path': 'urls',
-            }
-        },
-        'settings_config': {
-            'cms.djangoapp': {
-                'test': {'relative_path': 'settings.test'},
-                'common': {'relative_path': 'settings.common'},
-                'production': {'relative_path': 'settings.production'},
-            },
-        },
-    }
+# class EoxCoreCMSConfig(EoxCoreConfig):
+#     """App configuration"""
+#     name = 'eox_studio'
+#     verbose_name = "eduNEXT Openedx Extensions"
+#
+#     plugin_app = {
+#         'url_config': {
+#             'cms.djangoapp': {
+#                 'namespace': 'eox-lms',
+#                 'regex': r'^eox-lms/',
+#                 'relative_path': 'urls',
+#             }
+#         },
+#         'settings_config': {
+#             'cms.djangoapp': {
+#                 'test': {'relative_path': 'settings.test'},
+#                 'common': {'relative_path': 'settings.common'},
+#                 'production': {'relative_path': 'settings.production'},
+#             },
+#         },
+#     }

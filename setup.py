@@ -84,9 +84,9 @@ setup(
     entry_points={
         "lms.djangoapp": [
             "eox_lms = eox_lms.apps:EoxCoreConfig",
-        ],
-        "cms.djangoapp": [
-            "eox_lms = eox_lms.apps:EoxCoreCMSConfig",
-        ],
+        ]
+        # "cms.djangoapp": [
+        #     "eox_lms = eox_lms.apps:EoxCoreCMSConfig",
+        # ],
     }
 )
