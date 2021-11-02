@@ -30,6 +30,7 @@ def load_requirements(*requirements_path):
     Load all requirements from the specified requirements files
     Returns a list of requirement strings.
     """
+    print("PATH = " + str(*requirements_path))
     requirements = set()
     for path in requirements_path:
         with open(path) as reqs:
@@ -38,6 +39,7 @@ def load_requirements(*requirements_path):
                     if is_requirement(line.strip())
             )
 
+    print("REQUIREMENTS = " + str(list(requirements)))
     return list(requirements)
 
 
@@ -80,6 +82,7 @@ setup(
     platforms=["any"],
     zip_safe=False,
     packages=['eox_lms'],
+    package_data={'eox_lms': ['*', '*/*', '*/*/*']},
     include_package_data=True,
     entry_points={
         "lms.djangoapp": [
