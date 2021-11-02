@@ -3,7 +3,7 @@
 source /edx/app/edxapp/edxapp_env
 
 pip uninstall -y eox-lms
-pip install -e .
+pip install .
 
 /edx/bin/supervisorctl restart lms
 
