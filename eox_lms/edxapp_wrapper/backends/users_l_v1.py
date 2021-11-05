@@ -57,7 +57,6 @@ def check_edxapp_account_conflicts(email, username):
     Exposed function to check conflicts
     """
     conflicts = []
-    print("check_edxapp_account_conflicts.. For LMS")
     if username and username_exists_or_retired(username):
         conflicts.append("username")
 
@@ -90,31 +89,27 @@ def create_edxapp_user(*args, **kwargs):
 
     email = kwargs.pop("email")
     username = kwargs.pop("username")
+    first_name = kwargs.pop("first_name") if "first_name" in kwargs else ''
+    last_name = kwargs.pop("last_name") if "last_name" in kwargs else ''
+    kwargs["name"] = (first_name + " " + last_name).strip()
     conflicts = check_edxapp_account_conflicts(email=email, username=username)
+
+    # print("CONFLICTS = " + str(conflicts))
     if conflicts:
         return None, ["Fatal: account collition with the provided: {}".format(", ".join(conflicts))]
 
-    data = {
-        'username': username,
-        'email': email,
-        'password': kwargs.pop("password"),
-        'name': kwargs.pop("fullname"),
-    }
+    profile_fields = [ "name", "level_of_education", "gender", "mailing_address",
+                       "city", "country", "goals", "year_of_birth" ]
+
     # Go ahead and create the new user
     with transaction.atomic():
-        # In theory is possible to extend the registration form with a custom app
-        # An example form app for this can be found at http://github.com/open-craft/custom-form-app
-        # form = get_registration_extension_form(data=params)
-        # if not form:
-        form = AccountCreationForm(
-            data=data,
-            tos_required=False,
-            # TODO: we need to support the extra profile fields as defined in the django.settings
-            # extra_fields=extra_fields,
-            # extended_profile_fields=extended_profile_fields,
-            # enforce_password_policy=enforce_password_policy,
-        )
-        (user, profile, registration) = do_create_account(form)  # pylint: disable=unused-variable
+        # print("NEW CODE....")
+        user = User(username=username, email=email, first_name = first_name, last_name=last_name,  is_active=True)
+        user.save()
+        registration = Registration()
+        registration.register(user)
+        profile = UserProfile(user=user, **{key: kwargs.get(key) for key in profile_fields})
+        profile.save()
 
     site = kwargs.pop("site", False)
     if site:

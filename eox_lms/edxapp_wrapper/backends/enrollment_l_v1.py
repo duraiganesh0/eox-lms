@@ -46,7 +46,6 @@ def create_enrollment(user, *args, **kwargs):
         )
 
     """
-    print("create_enrollment")
     kwargs = dict(kwargs)
     program_uuid = kwargs.pop('bundle_id', None)
     course_id = kwargs.pop('course_id', None)
@@ -158,10 +157,7 @@ def get_user_enrollments_for_course(*args, **kwargs):
 #            enrollment_model_serialized['enrollment_attributes'] = api.get_enrollment_attributes(enrollment.username, course_id.replace(' ', '+'))
 #            enrollment_model_serialized['course_id'] = course_id
 #            enrollments_serialized.append(enrollment_model_serialized)
-            print(enrollment)
-            print("user is {}".format(enrollment.username))
-            print("enrollment_model_serialized is {}".format(enrollment_model_serialized))
-        
+
         return enrollments, errors
     except InvalidKeyError:
         errors.append('No course found for course_id `{}`'.format(course_id))

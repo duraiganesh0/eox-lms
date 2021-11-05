@@ -99,6 +99,8 @@ class EdxappUserSerializer(serializers.Serializer):
         write_only=True,
     )
     fullname = serializers.CharField(max_length=255, write_only=True)  # write_only so the user object does not complain for having the name at get_full_name()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
 
     # Extra info to be returned by the api after creating the user
     is_active = serializers.BooleanField(read_only=True)
@@ -164,7 +166,8 @@ class EdxappExtendedUserSerializer(EdxappUserSerializer):
         # In case the field IS allowed, check if is required or not
         for field in profile_fields:
             if field not in extra_fields or field in extended_profile_fields:
-                self.fields.pop(field)
+                if field not in {"first_name", "last_name"}: # Added by me :)
+                    self.fields.pop(field)
             else:
                 # Hidden fields take their value from the default, so we should not alter the "required" attribute.
                 if not isinstance(self.fields[field], HiddenField):
@@ -212,11 +215,12 @@ class WrittableEdxappUserSerializer(EdxappExtendedUserSerializer):
             - The field being updated is a safe field.
         """
         # If at least one of these conditions is true, then the user can't be updated.
-        safe_fields = getattr(settings, "EOX_CORE_USER_UPDATE_SAFE_FIELDS", [])
 
-        for attr in attrs:
-            if attr not in safe_fields:
-                raise serializers.ValidationError({"detail": "You are not allowed to update {}.".format(attr)})
+        # safe_fields = getattr(settings, "EOX_CORE_USER_UPDATE_SAFE_FIELDS", [])
+
+        # for attr in attrs:
+        #     if attr not in safe_fields:
+        #         raise serializers.ValidationError({"detail": "You are not allowed to update {}.".format(attr)})
 
         if self.instance.is_staff or self.instance.is_superuser:
             raise serializers.ValidationError({"detail": "You can't update users with roles like staff or superuser."})
@@ -243,7 +247,6 @@ class WrittableEdxappUserSerializer(EdxappExtendedUserSerializer):
             profile_meta = instance.profile.get_meta()
 
         for key, value in validated_data.items():
-
             if key == "password":
                 instance.set_password(value)
 
