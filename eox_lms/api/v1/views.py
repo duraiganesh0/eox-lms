@@ -76,11 +76,17 @@ class EdxappUserSocialAuthentication(APIView):
         serializer = EdxappUserSocialAuthQuerySerializer(data=request.data)
         serializer.is_valid()
         data = serializer.data.copy()
-        data['user'] = self.user(username=data['username'])
-        data.pop('username')
-        add_user_social_auth(**data)
-        translated = self.translate(serializer.data)
-        return Response(self.get_auth_data(get_user_social_auths(**translated)))
+
+        duplicate = get_user_social_auths(provider=data["provider"], uid=data["uid"])
+        response = {"Message", "Social Authorisation found with duplicate povider / uid"}
+        if not duplicate:
+            data['user'] = self.user(username=data['username'])
+            data.pop('username')
+            add_user_social_auth(**data)
+            translated = self.translate(serializer.data)
+            response = self.get_auth_data(get_user_social_auths(**translated))
+
+        return Response(response)
 
     def get_auth_data(self, auths):
         """
