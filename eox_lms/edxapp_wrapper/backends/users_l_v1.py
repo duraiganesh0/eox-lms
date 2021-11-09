@@ -105,6 +105,7 @@ def create_edxapp_user(*args, **kwargs):
     with transaction.atomic():
         # print("NEW CODE....")
         user = User(username=username, email=email, first_name = first_name, last_name=last_name,  is_active=True)
+        user.set_password(kwargs.pop("password"))
         user.save()
         registration = Registration()
         registration.register(user)
