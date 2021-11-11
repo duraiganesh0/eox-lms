@@ -91,7 +91,7 @@ def create_edxapp_user(*args, **kwargs):
     username = kwargs.pop("username")
     first_name = kwargs.pop("first_name") if "first_name" in kwargs else ''
     last_name = kwargs.pop("last_name") if "last_name" in kwargs else ''
-    kwargs["name"] = (first_name + " " + last_name).strip()
+    kwargs["name"] = kwargs.pop("fullname") if "fullname" in kwargs else (first_name + " " + last_name).strip()
     conflicts = check_edxapp_account_conflicts(email=email, username=username)
 
     # print("CONFLICTS = " + str(conflicts))
