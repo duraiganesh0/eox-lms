@@ -180,7 +180,10 @@ class UserQueryMixin:
         serialized_user = EdxappUserReadOnlySerializer(
             user, custom_fields=admin_fields, context={"request": request}
         )
-        return self.write_groups(user, serialized_user.data)
+        user_json = self.write_groups(user, serialized_user.data)
+        user_json["first_name"] = getattr(user, "first_name")
+        user_json["last_name"] = getattr(user, "last_name")
+        return user_json
 
 
     def write_groups(self, user, json):
