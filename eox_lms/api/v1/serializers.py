@@ -222,8 +222,8 @@ class WrittableEdxappUserSerializer(EdxappExtendedUserSerializer):
         #     if attr not in safe_fields:
         #         raise serializers.ValidationError({"detail": "You are not allowed to update {}.".format(attr)})
 
-        if self.instance.is_staff or self.instance.is_superuser:
-            raise serializers.ValidationError({"detail": "You can't update users with roles like staff or superuser."})
+        # if self.instance.is_staff or self.instance.is_superuser:
+        #     raise serializers.ValidationError({"detail": "You can't update users with roles like staff or superuser."})
 
         if UserSignupSource.objects.filter(user__email=self.instance.email).count() > MAX_SIGNUP_SOURCES_ALLOWED:
             raise serializers.ValidationError({"detail": "You can't update users with more than one sign up source."})

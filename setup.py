@@ -52,7 +52,7 @@ def is_requirement(line):
 setup(
     name="eox-lms",
     python_requires='>=3.5',
-    version="1",
+    version="1.0.1",
     author="eduNEXT",
     author_email="contact@edunext.co",
     url="https://github.com/eduNEXT/eox-lms",
