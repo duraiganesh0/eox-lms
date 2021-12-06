@@ -893,7 +893,7 @@ class EdxappEnrollment(UserQueryMixin, APIView):
         }
         enrollment_set, errors = get_user_enrollments_for_course(**enrollment_query)
         if errors:
-            raise NotFound(detail=errors)
+            raise ValidationError(detail=errors)
 
         enrollments_serialized = []
         for enrollment in enrollment_set.iterator():
