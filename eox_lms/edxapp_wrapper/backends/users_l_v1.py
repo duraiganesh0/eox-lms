@@ -144,8 +144,16 @@ def create_edxapp_user(*args, **kwargs):
     return user, errors
 
 
-def get_edxapp_users():
+def get_all_users():
     users = User.objects.all()
+    return users
+
+def get_edxapp_users(**kwargs):
+    print("Args = " + str(kwargs))
+    offset = kwargs.get('OFFSET') if 'OFFSET' in kwargs else 0
+    limit = kwargs.get('LIMIT') if 'LIMIT' in kwargs else 1000
+
+    users = User.objects.order_by('username')[offset:offset + limit]
     return users
 
 def get_edxapp_user(**kwargs):
@@ -168,6 +176,7 @@ def get_edxapp_user(**kwargs):
             }
         )
     """
+    print("Args = " + str(kwargs))
     params = {key: kwargs.get(key) for key in ['username', 'email', 'id'] if key in kwargs}
     site = kwargs.get('site')
     try:

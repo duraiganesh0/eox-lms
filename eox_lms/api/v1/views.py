@@ -155,8 +155,13 @@ class UserQueryMixin:
         if not query_params:
             query_params = self.get_query_params(request)
 
+        print("Query PARAMS = {}".format(query_params))
+
         username = query_params.get("username", None)
         email = query_params.get("email", None)
+        offset = int(query_params.get("OFFSET", 0))
+        limit = int(query_params.get("LIMIT", 1000))
+        print("limit = {}".format(limit))
 
         # if not email and not username:
         #    raise ValidationError(detail="Email or username needed")
@@ -168,6 +173,12 @@ class UserQueryMixin:
             user_query["username"] = username
         elif email:
             user_query["email"] = email
+        if offset:
+            user_query["OFFSET"] = offset
+        if limit:
+            user_query["LIMIT"] = limit
+
+        print("User Query {}".format(user_query))
 
         return user_query
 
@@ -456,8 +467,9 @@ class EdxappUser(UserQueryMixin, APIView):
         """
 
         query = self.get_user_query(request)
+        print("Query = {}".format(query))
 
-        data = self.get_single_user(query, request) if self.single_request(query) else self.get_all_users(request)
+        data = self.get_single_user(query, request) if self.single_request(query) else self.get_all_users(query, request)
 
         return Response(data)
 
@@ -471,9 +483,9 @@ class EdxappUser(UserQueryMixin, APIView):
         data = self.serialize(user, request)
         return data
 
-    def get_all_users(self, request):
+    def get_all_users(self, query, request):
         """ Get all the users for edx """
-        users = get_edxapp_users()
+        users = get_edxapp_users(**query)
         data = []
         for next in users:
             data.append(self.serialize(next, request))
