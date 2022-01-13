@@ -142,8 +142,8 @@ def get_user_enrollments_for_course(*args, **kwargs):
         )
     """
     course_id = kwargs.pop('course_id', None)
-    offset = kwargs.pop('OFFSET', 0)
-    limit = kwargs.pop('LIMIT', 1000)
+    offset = kwargs.pop('offset', 0)
+    limit = kwargs.pop('limit', 1000)
 
     enrolments = CourseEnrollment.objects.filter(course_id=course_id).order_by("user")[offset:offset + limit]
     return enrolments

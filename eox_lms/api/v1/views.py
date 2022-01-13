@@ -903,8 +903,10 @@ class EdxappEnrollment(UserQueryMixin, APIView):
         # enrollment_query = {
         #     "course_id": course_id.replace(' ' , '+'),
         # }
-
-        enrollment_set = get_user_enrollments_for_course(course_id=course_id.replace(' ' , '+'))
+        offset = int(params.get("OFFSET", 0))
+        limit = int(params.get("LIMIT", 1000))
+        enrollment_set = get_user_enrollments_for_course(course_id=course_id.replace(' ' , '+'),
+                                                         offset=offset, limit=limit)
         # if errors:
         #     raise ValidationError(detail=errors)
 
