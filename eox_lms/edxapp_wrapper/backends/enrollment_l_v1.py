@@ -141,29 +141,34 @@ def get_user_enrollments_for_course(*args, **kwargs):
             }
         )
     """
-    errors = []
     course_id = kwargs.pop('course_id', None)
+    offset = kwargs.pop('OFFSET', 0)
+    limit = kwargs.pop('LIMIT', 1000)
 
-    try:
-        LOG.info('Getting all the enrollments of course: %s', course_id)
-        enrollments = api._data_api().get_user_enrollments(CourseKey.from_string(course_id))
-        print("Enrollments " + str(enrollments))
-        # if not enrollments:
-        #     errors.append('No enrollment found for course:`{}`'.format(course_id))
-        #     return None, errors
+    enrolments = CourseEnrollment.objects.filter(course_id=course_id).order_by("user")[offset:offset + limit]
+    return enrolments
 
-#        enrollments = []
-#        for enrollment in enrollments.iterator():
-#            enrollment_model_serialized = EdxappCourseEnrollmentSerializer(enrollment).data
-#            enrollment_model_serialized['enrollment_attributes'] = api.get_enrollment_attributes(enrollment.username, course_id.replace(' ', '+'))
-#            enrollment_model_serialized['course_id'] = course_id
-#            enrollments_serialized.append(enrollment_model_serialized)
-
-        return enrollments, errors
-    except InvalidKeyError:
-        errors.append('No course found for course_id `{}`'.format(course_id))
-        return None, errors
-    return enrollments, errors
+#
+# try:
+#         LOG.info('Getting all the enrollments of course: %s', course_id)
+#         enrollments = api._data_api().get_user_enrollments(CourseKey.from_string(course_id))
+#         print("Enrollments " + str(enrollments))
+#         # if not enrollments:
+#         #     errors.append('No enrollment found for course:`{}`'.format(course_id))
+#         #     return None, errors
+#
+# #        enrollments = []
+# #        for enrollment in enrollments.iterator():
+# #            enrollment_model_serialized = EdxappCourseEnrollmentSerializer(enrollment).data
+# #            enrollment_model_serialized['enrollment_attributes'] = api.get_enrollment_attributes(enrollment.username, course_id.replace(' ', '+'))
+# #            enrollment_model_serialized['course_id'] = course_id
+# #            enrollments_serialized.append(enrollment_model_serialized)
+#
+#         return enrollments, errors
+#     except InvalidKeyError:
+#         errors.append('No course found for course_id `{}`'.format(course_id))
+#         return None, errors
+#     return enrollments, errors
 
 
 def get_enrollment_attributes(username, course_id):

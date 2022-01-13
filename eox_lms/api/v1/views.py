@@ -899,21 +899,22 @@ class EdxappEnrollment(UserQueryMixin, APIView):
         return False  if self.query_params.get("username", None) is None else True
 
 
-    def get_users_enrolled_in_course(self, course_id):
-        enrollment_query = {
-            "course_id": course_id.replace(' ' , '+'),
-        }
-        enrollment_set, errors = get_user_enrollments_for_course(**enrollment_query)
-        if errors:
-            raise ValidationError(detail=errors)
+    def get_users_enrolled_in_course(self, course_id, params):
+        # enrollment_query = {
+        #     "course_id": course_id.replace(' ' , '+'),
+        # }
+
+        enrollment_set = get_user_enrollments_for_course(course_id=course_id.replace(' ' , '+'))
+        # if errors:
+        #     raise ValidationError(detail=errors)
 
         enrollments_serialized = []
         for enrollment in enrollment_set.iterator():
             enrollment_model_serialized = EdxappCourseEnrollmentSerializer(enrollment).data
-            enrollment_model_serialized['enrollment_attributes'] = get_user_enrollment_attributes(enrollment.username,
-                                                                                                  course_id.replace(' ',
-                                                                                                                    '+'))
-            enrollment_model_serialized['course_id'] = course_id.replace(' ', '+')
+            #enrollment_model_serialized['enrollment_attributes'] = get_user_enrollment_attributes(enrollment.username,
+            #                                                                                      course_id.replace(' ',
+            #                                                                                                        '+'))
+            # enrollment_model_serialized['course_id'] = course_id.replace(' ', '+')
             enrollment_model_serialized['user'] = enrollment.username
             enrollments_serialized.append(enrollment_model_serialized)
 
@@ -960,7 +961,7 @@ class EdxappEnrollment(UserQueryMixin, APIView):
         user = None
         flag_get_all = True
 
-        self.query_params = self.get_query_params(request)
+        query_params = self.get_query_params(request)
         course_id = self.query_params.get("course_id", None)
         # if self.is_get_single_user_enrollment(request):
         #     self.get_single_user_enrollment(request)
@@ -973,7 +974,7 @@ class EdxappEnrollment(UserQueryMixin, APIView):
         if self.is_get_single_user_enrollment(request):
             response = self.get_single_user_enrollment(course_id , request)
         else:
-            response = self.get_users_enrolled_in_course(course_id)
+            response = self.get_users_enrolled_in_course(course_id, query_params)
 
         return Response(response)
 
