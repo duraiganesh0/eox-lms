@@ -10,7 +10,7 @@ import logging
 import edx_api_doc_tools as apidocs
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils import six
+#from django.utils import six
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import APIException, NotFound, ValidationError
