@@ -25,20 +25,20 @@ except ImportError:
 # version = get_version("eox_lms", "__init__.py")
 
 
-def load_requirements(*requirements_path):
-    """
-    Load all requirements from the specified requirements files
-    Returns a list of requirement strings.
-    """
-    requirements = set()
-    for path in requirements_path:
-        with open(path) as reqs:
-            requirements.update(
-                    line.split('#')[0].strip() for line in reqs
-                    if is_requirement(line.strip())
-            )
-
-    return list(requirements)
+# def load_requirements(*requirements_path):
+#     """
+#     Load all requirements from the specified requirements files
+#     Returns a list of requirement strings.
+#     """
+#     requirements = set()
+#     # for path in requirements_path:
+#     #     with open(path) as reqs:
+#     #         requirements.update(
+#     #                 line.split('#')[0].strip() for line in reqs
+#     #                 if is_requirement(line.strip())
+#     #         )
+#
+#     return list(requirements)
 
 
 def is_requirement(line):
@@ -60,21 +60,21 @@ setup(
     long_description="",
     long_description_content_type='text/x-rst',
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Framework :: Django :: 3.2',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU Affero General Public License v3',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.8',
+        # 'Development Status :: 5 - Production/Stable',
+        # 'Framework :: Django :: 3.2',
+        # 'Intended Audience :: Developers',
+        # 'License :: OSI Approved :: GNU Affero General Public License v3',
+        # 'Operating System :: OS Independent',
+        # 'Programming Language :: Python :: 3',
+        # 'Programming Language :: Python :: 3.5',
+        # 'Programming Language :: Python :: 3.8',
     ],
-    install_requires=load_requirements('requirements/base.in'),
-    extras_require={
-        "sentry": load_requirements('requirements/sentry.in'),
-        "tpa": load_requirements('requirements/tpa.in'),
-        "eox-audit": load_requirements('requirements/eox-audit-model.in')
-    },
+    #install_requires=load_requirements('requirements/base.in'),
+    #extras_require={
+    #    "sentry": load_requirements('requirements/sentry.in'),
+    #    "tpa": load_requirements('requirements/tpa.in'),
+    #    "eox-audit": load_requirements('requirements/eox-audit-model.in')
+    #},
     scripts=[],
     license="AGPL",
     platforms=["any"],
