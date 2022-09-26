@@ -655,8 +655,8 @@ class EdxappUserUpdater(UserQueryMixin, APIView):
         # Pop identification
         data = request.data.copy()
         query_params = {
-            "email": data.pop("email", None),
-            "username": data.pop("username", None),
+            "email": data.get("email", None),
+            "username": data.get("username", None),
         }
         query = self.get_user_query(request, query_params=query_params)
         user = get_edxapp_user(**query)
