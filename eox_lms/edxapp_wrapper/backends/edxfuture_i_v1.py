@@ -6,8 +6,7 @@ from django.conf import settings
 # pylint: disable=import-error
 from django.core.cache import cache
 from openedx.core.djangoapps.catalog.models import CatalogIntegration
-from openedx.core.djangoapps.catalog.utils import create_catalog_api_client
-
+from openedx.core.djangoapps.catalog.utils import get_catalog_api_client as create_catalog_api_client
 
 def get_program(program_uuid, ignore_cache=False):
     """
