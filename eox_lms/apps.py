@@ -29,6 +29,14 @@ class EoxCoreConfig(AppConfig):
         },
     }
 
+    def ready(self):
+        from eox_lms.api.v1.permissions import load_permissions
+        try:
+            load_permissions()
+        except Exception:
+            # During image build / translations / collectstatic
+            pass
+
 
 # class EoxCoreCMSConfig(EoxCoreConfig):
 #     """App configuration"""
