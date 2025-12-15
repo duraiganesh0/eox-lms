@@ -1,17 +1,17 @@
 """ urls.py """
 
 # from django.conf import settings
-from django.conf.urls import url
+from django.urls import re_path
 
 from eox_lms.api.v1 import views
 
 app_name = 'eox_lms'  # pylint: disable=invalid-name
 
 urlpatterns = [  # pylint: disable=invalid-name
-    url(r'^user/$', views.EdxappUser.as_view(), name='edxapp-user'),
-    url(r'^enrollment/$', views.EdxappEnrollment.as_view(), name='edxapp-enrollment'),
-    url(r'^update-user/$', views.EdxappUserUpdater.as_view(), name='edxapp-user-updater'),
-    url(r'^user-social-auth/$', views.EdxappUserSocialAuthentication.as_view(), name='edxapp-user-social-auth')
+    re_path(r'^user/$', views.EdxappUser.as_view(), name='edxapp-user'),
+    re_path(r'^enrollment/$', views.EdxappEnrollment.as_view(), name='edxapp-enrollment'),
+    re_path(r'^update-user/$', views.EdxappUserUpdater.as_view(), name='edxapp-user-updater'),
+    re_path(r'^user-social-auth/$', views.EdxappUserSocialAuthentication.as_view(), name='edxapp-user-social-auth')
 
     # url(r'^course/$', views.EdxappCourse.as_view(), name='edxapp-courseinfo')
 
